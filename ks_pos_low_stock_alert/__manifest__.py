@@ -26,6 +26,19 @@
         Point of Sales Stock Alert
         Point of Sales Low Stock Alert
         POS Shop Low Stock
+        stock notification, 
+        low stock notification, 
+        product stock notification, 
+        product low stock, 
+        stock management, 
+        notification odoo apps, 
+        odoo notification, 
+        odoo website stock, 
+        website stock notify, 
+        stock notify, 
+        product stock, 
+        odoo website product stock, 
+        odoo website stock management
     """,
     'author': 'Ksolves India Pvt. Ltd.',
     'website': "https://www.ksolves.com/",
