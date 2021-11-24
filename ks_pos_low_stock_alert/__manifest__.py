@@ -4,7 +4,7 @@
     'summary': """Manage the Stock of your POS products by highlighting them in different colors depending on
                 their stock state.""",
     'description': """
-        POS Low Stock Alert v14.0
+        POS Low Stock Alert v15.0
         Manage the Stock of your POS products by highlighting them in different colors depending on
                 their stock state.
         POS,
@@ -45,12 +45,24 @@
     'license': 'LGPL-3',
     'category': 'Point Of Sale',
     'support': 'sales@ksolves.com',
-    'version': '14.0.1.0.0',
+    'version': '15.0.1.0.0',
     'images': ['static/description/banner.jpg'],
     'depends': ['point_of_sale'],
     'data': [
-        'views/assets.xml',
+        # 'views/assets.xml',
         'views/config.xml'
     ],
-    'qweb': ['static/src/xml/ks_low_stock.xml']
+    # 'qweb': ['static/src/xml/ks_low_stock.xml']
+    'assets' : {
+        'point_of_sale.assets': [
+            'ks_pos_low_stock_alert/static/src/css/ks_low_stock.css',
+            'ks_pos_low_stock_alert/static/src/js/ks_utils.js',
+            'ks_pos_low_stock_alert/static/src/js/ks_low_stock.js',
+            'ks_pos_low_stock_alert/static/src/js/ks_product_list.js',
+            'ks_pos_low_stock_alert/static/src/js/ks_product_screen.js',
+        ],
+        'web.assets_qweb': [
+            'ks_pos_low_stock_alert/static/src/xml/**/*',
+        ]
+    }
 }
