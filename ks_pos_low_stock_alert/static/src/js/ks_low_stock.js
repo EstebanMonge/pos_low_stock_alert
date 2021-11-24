@@ -7,8 +7,9 @@ odoo.define('ks_pos_low_stock_alert.ks_low_stock', function (require) {
     "use strict";
 
     var ks_models = require('point_of_sale.models');
-    var ks_screens = require('point_of_sale.screens');
-    var ks_utils = require('ks_pos_low_stock_alert.utils');
+    const KsPaymentScreen = require('point_of_sale.PaymentScreen');
+    const ks_utils = require('ks_pos_low_stock_alert.utils');
+    const Registries = require('point_of_sale.Registries');
 
     ks_models.load_fields('product.product', ['type', 'qty_available']);
     var ks_super_pos = ks_models.PosModel.prototype;
@@ -72,8 +73,8 @@ odoo.define('ks_pos_low_stock_alert.ks_low_stock', function (require) {
             }
         },
 
-        push_order: function(ks_order, opts){
-            var ks_pushed = ks_super_pos.push_order.call(this, ks_order, opts);
+        push_single_order: function(ks_order, opts){
+            var ks_pushed = ks_super_pos.push_single_order.call(this, ks_order, opts);
             if (ks_order){
                 this.ks_update_product_qty_from_order(ks_order);
             }
@@ -92,59 +93,22 @@ odoo.define('ks_pos_low_stock_alert.ks_low_stock', function (require) {
         }
     });
 
-    ks_screens.ActionpadWidget.include({
+    // overriding the existing class to validate the payment order
+    const ks_payment = (KsPaymentScreen) =>
+        class extends KsPaymentScreen {
 
-        renderElement: function(){
-            var self = this;
-            this._super();
-            this.$('.pay').off('click');
-            this.$('.pay').click(function(){
-                var order = self.pos.get_order();
-                if(ks_utils.ks_validate_order_items_availability(order, self.pos.config, self.gui)) {
-                    var has_valid_product_lot = _.every(order.orderlines.models, function(line){
-                        return line.has_valid_product_lot();
-                    });
-                    if(!has_valid_product_lot){
-                        self.gui.show_popup('confirm',{
-                            'title': _t('Empty Serial/Lot Number'),
-                            'body':  _t('One or more product(s) required serial/lot number.'),
-                            confirm: function(){
-                                self.gui.show_screen('payment');
-                            },
-                        });
-                    }else{
-                        self.gui.show_screen('payment');
-                    }
+        async validateOrder(isForceValidate) {
+            if (await this._isOrderValid(isForceValidate) && ks_utils.ks_validate_order_items_availability(this.env.pos.get_order(), this.env.pos.config)) {
+                // remove pending payments before finalizing the validation
+                for (let line of this.paymentLines) {
+                    if (!line.is_done()) this.currentOrder.remove_paymentline(line);
                 }
-            });
-            this.$('.set-customer').click(function(){
-                self.gui.show_screen('clientlist');
-            });
-        }
-    });
-
-    ks_screens.ProductListWidget.include({
-        calculate_cache_key: function(product, pricelist){
-            return product.id + ',' + pricelist.id  + ',' + product.qty_available;
-        },
-
-        renderElement: function() {
-            this._super();
-            var self = this;
-            var task;
-            clearInterval(task);
-            task = setTimeout(function () {
-                $(".overlay").parent().addClass('pointer-none');
-            }, 100);
-        }
-    });
-
-    ks_screens.PaymentScreenWidget.include({
-
-        validate_order: function(force_validation) {
-            if (this.order_is_valid(force_validation) && ks_utils.ks_validate_order_items_availability(this.pos.get_order(), this.pos.config, this.gui)) {
-                this.finalize_validation();
+                await this._finalizeValidation();
             }
         }
-    });
+    };
+
+    Registries.Component.extend(KsPaymentScreen,ks_payment);
+
+    return KsPaymentScreen;
 });
