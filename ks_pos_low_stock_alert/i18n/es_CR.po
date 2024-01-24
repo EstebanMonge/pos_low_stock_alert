@@ -74,6 +74,20 @@ msgid "Empty Serial/Lot Number"
 msgstr "Número de serie o lote vacío"
 
 #. module: ks_pos_low_stock_alert
+#. openerp-web
+#: code:addons/ks_pos_low_stock_alert/static/src/js/ks_product_screen.js:1
+#, python-format
+msgid "Product low stock"
+msgstr "Baja existencia de producto"
+
+#. module: ks_pos_low_stock_alert
+#. openerp-web
+#: code:addons/ks_pos_low_stock_alert/static/src/js/ks_product_screen.js:2
+#, python-format
+msgid "The following products are low of stock: %s"
+msgstr "Los siguientes productos tienen una baja existencia: %s"
+
+#. module: ks_pos_low_stock_alert
 #: model:ir.model.fields,field_description:ks_pos_low_stock_alert.field_pos_config__minimum_stock_alert
 msgid "Minimum Limit to change the stock color for the product"
 msgstr "Límite mínimo para cambiar el color de la existencia del producto"
@@ -88,7 +102,7 @@ msgstr "Alerta de existencia mínima"
 #: code:addons/ks_pos_low_stock_alert/static/src/js/ks_product_screen.js:0
 #, python-format
 msgid "One or more product(s) required serial/lot number."
-msgstr "Uno o mas productos requiere el número de serie o lote."
+msgstr "Uno o mas productos requiere el número de serie o lote"
 
 #. module: ks_pos_low_stock_alert
 #. openerp-web
