@@ -7,7 +7,6 @@ odoo.define('ks_pos_low_stock_alert.utils', function (require) {
     "use strict";
 
     var _t = require('web.core')._t;
-    const { Gui } = require('point_of_sale.Gui');
 
     function ks_validate_order_items_availability(ks_order, config, ks_gui) {
 
@@ -23,9 +22,9 @@ odoo.define('ks_pos_low_stock_alert.utils', function (require) {
             }
         }
         if(!isValid){
-            Gui.showPopup('ErrorPopup', {
-                title: _t('Cannot order a product more than its availability'),
-                body: _t(ks_order_line.get_product().display_name + ' has only ' + ks_order_line.get_product().qty_available + ' items available. \n You\'re trying to order ' + ks_order_line.get_quantity() + '.'),
+            ks_gui.show_popup('error',{
+                'title': _t('Cannot order a product more than its availability'),
+                'body':  _t(ks_order_line.get_product().display_name + ' has only ' + ks_order_line.get_product().qty_available + ' items available. \n You\'re trying to order ' + ks_order_line.get_quantity() + '.'),
             });
         }
         return isValid;
