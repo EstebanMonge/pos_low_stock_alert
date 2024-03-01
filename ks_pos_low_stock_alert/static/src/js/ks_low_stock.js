@@ -115,6 +115,25 @@ odoo.define('ks_pos_low_stock_alert.ks_low_stock', function (require) {
                     }else{
                         self.gui.show_screen('payment');
                     }
+                    if(self.pos.config.display_popup){
+                        var low_products = "";
+                        var order_line;
+                        for(var i = 0; i < order.get_orderlines().length ; i++) {
+                            order_line = order.get_orderlines()[i];
+                            if(order_line.get_product().type == 'product' && (order_line.get_product().qty_available < self.pos.config.minimum_stock_alert)) {
+                                low_products = low_products + " " + order_line.get_product().display_name;
+                            }
+                        }
+                        if(low_products != "") {
+                            self.gui.show_popup('confirm',{
+                                'title': _t('Product low stock'),
+                                'body':  _.str.sprintf(_t('The following products are low of stock: %s'), low_products),
+                                 confirm: function(){
+                                    self.gui.show_screen('payment');
+                                },
+                            });
+                        }
+                    }
                 }
             });
             this.$('.set-customer').click(function(){
